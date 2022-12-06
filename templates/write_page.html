@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Webpage Title -->
+    <title>7_OO</title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+      type="image/x-icon"
+    />
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+      type="image/x-icon"
+    />
+    <meta property="og:title" content="Daily Hangae" />
+    <meta
+      property="og:description"
+      content="항해를 진행하며 하루하루를 기록해보자"
+    />
+    <meta
+      property="og:image"
+      content="{{ url_for('static', filename='ogimg.png') }}"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../static/css/write_page.css" />
+
+    <!-- Bulma CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css"
+    />
+
+    <!-- Font Awesome CSS -->
+    <link
+      href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Black+And+White+Picture&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
+    <!-- 구글폰트 -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/png" href="http://example.com/myicon.png" />
+
+    <script type="text/javascript">
+      function cancel() {
+        $("file", "title", "content").empty();
+        alert("게시글 작성이 취소되었습니다!");
+        window.location.href = "/";
+      }
+    </script>
+    <script>
+      $(document).ready(function () {
+        set_temp();
+        show_comment();
+      });
+
+      function user_only() {
+        $.ajax({
+          type: "POST",
+          url: "/user_only",
+          data: {},
+          success: function (response) {
+            alert(response["msg"]);
+          },
+        });
+      }
+    </script>
+  </head>
+
+  <body>
+    <section class="hero is-success is-info">
+      <div class="hero-body">
+        <a href="/">
+          <p class="title">
+            <i class="fa fa-compass" aria-hidden="true"></i>
+            7_OO<br />
+            게시글 작성
+          </p>
+        </a>
+      </div>
+    </section>
+    <!-- content -->
+    <div class="wrap">
+      <div class="view-img" id="imagePreview">
+        <img id="upload-img" class="upload-img" />
+      </div>
+      <div class="content">
+        <p>사진 업로드</p>
+        <div class="custom-file">
+          <input
+            type="file"
+            class="custom-file-input"
+            id="file"
+            accept="image/gif, image/jpeg, image/png"
+          />
+          <label
+            class="custom-file-label"
+            for="customFile"
+            style="color: rgba(42, 42, 42, 0.71)"
+            >업로드할 사진을 선택하세요.</label
+          >
+        </div>
+        <div class="form-group">
+          <label for="formGroupExampleInput">제목</label>
+          <input
+            type="text"
+            class="form-control"
+            id="formGroupExampleInput"
+            placeholder="제목을 입력하세요."
+          />
+        </div>
+        <div class="form-group">
+          <label for="formGroupExampleInput2">내용</label>
+          <textarea
+            class="form-control"
+            id="formGroupExampleInput2"
+            cols="50"
+            rows="5"
+            placeholder="내용을 입력하세요."
+          ></textarea>
+        </div>
+        <div>
+          <button type="button" class="btn btn-primary" onclick="user_only()">
+            게시글 작성
+          </button>
+          <button type="button" class="btn btn-secondary" onclick="cancel()">
+            취소
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
