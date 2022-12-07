@@ -26,14 +26,13 @@ def login():
 
 # 로그인
 
-
 @app.route('/log_in', methods=['POST'])
 def log_in():
     email_receive = request.form["email_give"]
     password_receive = request.form["password_give"]
 
     db = pymysql.connect(host='localhost', user='root',
-                         db='test', password='0000', charset='utf8')
+                         db='flask_test', password='emznp2xk!', charset='utf8')
     curs = db.cursor()
 
     sql = """
@@ -63,13 +62,57 @@ def log_in():
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
         return jsonify({'result': 'success', 'token': token})
 
+# 회원가입
+
+@app.route('/signup')
+def signup():
+	return render_template('login.html')
+
+@app.route('/users/sign_up', methods=['POST'])
+def save_users_info():
+	email_receive = request.form['email2_give']
+	password_receive = request.form['password_give']
+	# password2_receive = request.form['password2_give']
+	name_receive = request.form['name_give']
+
+	file = request.files["file_give"]
+	print(file)
+	extension = file.filename.split('.')[-1]
+	today = datetime.now()
+	mytime = today.strftime("%Y-%m-%d-%H-%M-%S")
+	filename = f'file-{mytime}'
+	save_to = f'{filename}.{extension}'
+	file.save(f'static/images/{save_to}')
+	print(save_to)
+
+	db = pymysql.connect(host='localhost', user='root', db='flask_test', password='emznp2xk!', charset='utf8')
+	curs = db.cursor()
+
+	sql = """
+		insert into users (email, pw, name, regrate, filename)
+         values (%s,%s,%s,%s,%s)
+		"""
+
+	curs.execute(sql, (email_receive, password_receive, name_receive, mytime, save_to))
+
+	users_result = curs.fetchall()
+	# print(users_result[0][1] != password_receive)
+
+	json_str = json.dumps(users_result, indent=4, sort_keys=True, default=str)
+	db.commit()
+	db.close()
+
+	return jsonify({"result":"success", 'msg':'회원가입 완료!'})
+
+
+
 
 # 게시판 작성 페이지
 
 
 @app.route('/write_page')
 def write_page():
-    return render_template('write_page.html')
+   return render_template('write_page.html')
 
 # 게시글 작성
 
