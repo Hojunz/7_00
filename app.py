@@ -32,7 +32,7 @@ def log_in():
     password_receive = request.form["password_give"]
 
     db = pymysql.connect(host='localhost', user='root',
-                         db='flask_test', password='emznp2xk!', charset='utf8')
+                         db='flask_test', password='11!', charset='utf8')
     curs = db.cursor()
 
     sql = """
@@ -85,7 +85,7 @@ def save_users_info():
 	file.save(f'static/images/{save_to}')
 	print(save_to)
 
-	db = pymysql.connect(host='localhost', user='root', db='flask_test', password='emznp2xk!', charset='utf8')
+	db = pymysql.connect(host='localhost', user='root', db='flask_test', password='11!', charset='utf8')
 	curs = db.cursor()
 
 	sql = """
@@ -130,6 +130,53 @@ def user_only():
         # return redirect("/templates/write_page.html")
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return jsonify({'msg': 'User Only Access!!!'})
+
+
+# mypage
+
+@app.route('/mypage')
+def mypage():
+	return render_template('mypage.html')
+
+# mypage index에서 이동할 때
+@app.route('/', methods=['POST'])
+def move_to_mypage():
+	token_receive = request.cookies.get('mytoken')
+
+	try:
+		jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+		return jsonify({'result': 'success'})
+	except(jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+		return jsonify({'result': 'fail', 'msg': '로그인을 먼저 진행해주세요!!'})
+
+# mypage에서 db자료 표시
+
+@app.route("/user_info", methods=["GET"])
+def user_info_get():
+	token_receive = request.cookies.get('mytoken')
+	payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+	target_email = payload['id']
+
+	db = pymysql.connect(host='localhost', user='root', db='flask_test', password='11!', charset='utf8')
+	curs = db.cursor()
+
+	sql = """
+		SELECT *
+			FROM users u
+			WHERE u.email = %s
+		"""
+
+	curs.execute(sql, target_email)
+
+	users_result = curs.fetchall()
+	print(users_result[0])
+
+	json_str = json.dumps(users_result, indent=4, sort_keys=True, default=str)
+	db.commit()
+	db.close()
+
+	return jsonify({'msg':'GET 연결 완료!', 'user_info' : users_result[0]})
+
 
 
 if __name__ == '__main__':

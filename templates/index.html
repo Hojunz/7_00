@@ -39,6 +39,23 @@
         alert("로그아웃!");
         window.location.href = "/login";
       }
+
+      {# Mypage 이동 #}
+      function move_to_mypage() {
+            $.ajax({
+                type: "POST",
+                url: "/",
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        window.location.href = '/mypage'
+                    } else{
+                        alert(response['msg'])
+                    }
+
+                }
+            });
+        }
     </script>
   </head>
   <body class="is-preload">
@@ -58,6 +75,9 @@
               </li>
               <li>
                 <button onclick="sign_out()">LOGOUT</button>
+              </li>
+                <li>
+                <button onclick="move_to_mypage()">My Page</button>
               </li>
             </ul>
           </header>
