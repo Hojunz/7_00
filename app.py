@@ -63,6 +63,97 @@ def log_in():
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
         return jsonify({'result': 'success', 'token': token})
 
+#! 회원가입
+
+
+@app.route('/users/signup')
+def signup():
+    return render_template('login.html')
+
+
+@app.route('/users/sign_up', methods=['POST'])
+def save_users_info():
+    email_receive = request.form['email2_give']
+    password_receive = request.form['password_give']
+    # password2_receive = request.form['password2_give']
+    name_receive = request.form['name_give']
+    file = request.files["file_give"]
+    extension = file.filename.split('.')[-1]
+    today = datetime.now()
+    mytime = today.strftime("%Y-%m-%d-%H-%M-%S")
+    filename = f'file-{mytime}'
+    save_to = f'{filename}.{extension}'
+    file.save(f'static/images/{save_to}')
+    print(save_to)
+
+    db = pymysql.connect(host='localhost', user='root',
+                         db='test', password='0000', charset='utf8')
+    curs = db.cursor()
+
+    sql = """
+		insert into users (email, password, name, file)
+         values (%s,%s,%s,%s)
+		"""
+
+    curs.execute(sql, (email_receive, password_receive,
+                 name_receive, save_to))
+
+    # users_result = curs.fetchall()
+    # print(users_result[0][1] != password_receive)
+
+    # json_str = json.dumps(users_result, indent=4, sort_keys=True, default=str)
+    db.commit()
+    db.close()
+
+    return jsonify({"result": "success", 'msg': '회원가입 완료!'})
+
+#! mypage
+
+
+@app.route('/mypage')
+def mypage():
+    return render_template('mypage.html')
+
+
+# @app.route('/', methods=['POST'])
+# def move_to_mypage():
+#     token_receive = request.cookies.get('mytoken')
+
+#     try:
+#         jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+#         return jsonify({'result': 'success'})
+#     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+#         return jsonify({'result': 'fail', 'msg': '로그인을 먼저 진행해주세요!!'})
+
+#! mypage에서 db자료 표시
+
+
+@app.route("/user_info", methods=["GET"])
+def user_info_get():
+    token_receive = request.cookies.get('mytoken')
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    target_email = payload['id']
+
+    db = pymysql.connect(host='localhost', user='root',
+                         db='test', password='0000', charset='utf8')
+    curs = db.cursor()
+
+    sql = """
+		SELECT email,password,name,file
+			FROM users u
+			WHERE u.email = %s
+		"""
+
+    curs.execute(sql, target_email)
+
+    users_result = curs.fetchall()
+    print(users_result[0])
+
+    # json_str = json.dumps(users_result, indent=4, sort_keys=True, default=str)
+    db.commit()
+    db.close()
+
+    return jsonify({'msg': 'GET 연결 완료!', 'user_info': users_result[0]})
 
 #! 게시판 작성 페이지
 
@@ -71,7 +162,7 @@ def log_in():
 def write_page():
     return render_template('write_page.html')
 
-#! 사용자만 게시판 작성 페이지로 이동
+#! 사용자만 게시판 작성 페이지로 이동, mypage로 이동할 때
 
 
 @app.route('/user_only', methods=['POST'])
@@ -95,7 +186,7 @@ def write_page_update():
 #! 게시글 불러오기
 
 
-@app.route('/posts/list')
+@app.route('/posts/list', methods=["GET"])
 def get_post():
     db = pymysql.connect(host='localhost', user='root',
                          db='test', password='0000', charset='utf8')
@@ -148,7 +239,7 @@ def save_post():
 
     return jsonify({'msg': '게시글 작성 완료!'})
 
-# 게시글 업데이트
+#! 게시글 업데이트
 
 
 @app.route('/updatepost', methods=["PUT"])

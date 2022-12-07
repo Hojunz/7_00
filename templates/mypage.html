@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+
+    <title>My page</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        font-family: "Gowun Dodum", sans-serif;
+      }
+      table {
+        margin: auto;
+        margin-top: 20px;
+        border: 1px solid #444444;
+      }
+
+      th,
+      td {
+        text-align: center;
+
+        border-bottom: 1px solid #444444;
+        /*border-left: 1px solid #444444;*/
+        padding: 10px;
+      }
+
+      .find-btn {
+        text-align: center;
+      }
+
+      .find-btn1 {
+        display: inline-block;
+      }
+    </style>
+
+    <script>
+      $(document).ready(function () {
+        show_user_info();
+      });
+
+      function show_user_info() {
+        $("#info-box").empty();
+        $.ajax({
+          type: "GET",
+          url: "/user_info",
+          data: {},
+          success: function (response) {
+            let rows = response["user_info"];
+            let email, password, name, profile;
+            for (let i = 0; i < rows.length; i++) {
+              //   email = rows[1];
+              //   password = rows[2];
+              //   name = rows[3];
+              //   profile = rows[5];
+              email = rows[0];
+              password = rows[1];
+              name = rows[2];
+              profile = rows[3];
+            }
+            // const info = response["user_info"];
+            // if (info.length > 0) {
+            //   post.forEach((user) => {
+            //     let temp = ` <tr>
+            //                             <td align=center valign=middle>${user[0]}</td>
+            //                             <td align=center valign=middle>${user[1]}</tdv>
+            //                             <td align=center valign=middle>${user[2]}</td>
+            //                             <td align=center valign=middle><img src="../static/images/${user[4]}" alt="${email} profile"></td>
+            //                         </tr> `;
+            //   });
+            // }
+
+            let temp_html = `<tr>
+                                        <td align=center valign=middle>${email}</td>
+                                        <td align=center valign=middle>${password}</tdv>
+                                        <td align=center valign=middle>${name}</td>
+                                        <td align=center valign=middle><img src="../static/images/${profile}" alt="${email} profile"></td>
+                                    </tr>`;
+            $("#info-box").append(temp_html);
+          },
+        });
+      }
+
+      function edit_info() {
+        $("#info-box").empty();
+
+        $.ajax({
+          type: "GET",
+          url: "/user_info",
+          data: {},
+          success: function (response) {
+            // alert(response['msg'])
+            // console.log(response['user_info'])
+            let rows = response["user_info"];
+
+            let email, password, name, profile;
+            for (let i = 0; i < rows.length; i++) {
+              // console.log(rows[i])
+              email = rows[0];
+              password = rows[1];
+              name = rows[2];
+              profile = rows[3];
+            }
+
+            let temp_html = `<tr>
+                                        <td><input id="edit-email" type="text" value="${email}"></td>
+                                        <td><input id="edit-pw" type="text" value="${password}"></td>
+                                        <td><input id="edit-name" type="text" value="${name}"></td>
+                                        <td>
+                                            <form id="ocr_form" action="#" method="" enctype="multipart/form-data">
+                                                <input type="file" id="file" name="file">
+                                            </form>
+                                        </td>
+                                    </tr>`;
+            $("#info-box").append(temp_html);
+
+            // console.log($('#edit-email').val())
+          },
+        });
+      }
+
+      function edit_done() {
+        console.log($("#edit-email").val());
+
+        let edit_email = $("#edit-email").val();
+
+        $.ajax({
+          type: "PUT",
+          url: "/",
+          data: "",
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function (response) {},
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <table class="table table-success table-striped" style="width: 50%">
+      <thead>
+        <tr>
+          <th>이메일</th>
+          <th>비밀번호</th>
+          <th>이름</th>
+          <th>프로필</th>
+        </tr>
+      </thead>
+
+      <tbody id="info-box">
+        <tr>
+          <td><input id="edit-email" type="text" value="bbbb" /></td>
+          <td><input type="text" value="2222" /></td>
+          <td><input type="text" value="brain" /></td>
+          <td>
+            <form
+              id="ocr_form"
+              action="http://localhost:5000/sign_up"
+              method="POST"
+              enctype="multipart/form-data"
+            >
+              <input type="file" id="file" name="file" />
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <hr />
+
+    <div class="find-btn">
+      <button onclick="edit_info()" type="button" class="btn btn-success">
+        수정하기
+      </button>
+      <button onclick="edit_done()" type="button" class="btn btn-success">
+        수정완료
+      </button>
+    </div>
+  </body>
+</html>

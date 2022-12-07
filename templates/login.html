@@ -22,9 +22,10 @@
     <link rel="stylesheet" href="../static/css/login.css" />
     <script src="../static/js/login.js" defer></script>
     <script>
+      // 로그인
       function log_in() {
         let email = $("#email").val();
-        let password = $("#pw").val();
+        let password = $("#password").val();
 
         $.ajax({
           type: "POST",
@@ -45,6 +46,33 @@
               // 로그인이 안되면 에러메시지를 띄웁니다.
               alert(response["msg"]);
             }
+          },
+        });
+      }
+      // 회원가입
+      function save_users_info() {
+        let email = $("#email2").val();
+        let password = $("#password2").val();
+        // let password2 = $("#password2").val();
+        let name = $("#name").val();
+        let file = $("#file")[0].files[0];
+        let form_data = new FormData();
+        form_data.append("file_give", file);
+        form_data.append("email2_give", email);
+        form_data.append("password_give", password);
+        // form_data.append("password2_give", password2);
+        form_data.append("name_give", name);
+
+        $.ajax({
+          type: "POST",
+          url: "/users/sign_up",
+          data: form_data,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function (response) {
+            alert("가입이 완료되었습니다!");
+            window.location.href = "/login";
           },
         });
       }
@@ -75,7 +103,7 @@
             <div class="login__box">
               <i class="bx bx-lock login__icon"></i>
               <input
-                id="pw"
+                id="password"
                 type="text"
                 placeholder="Password"
                 class="login__input"
@@ -99,20 +127,51 @@
             <h1 class="login__title">Create Account</h1>
             <div class="login__box">
               <i class="bx bx-user login__icon"></i>
-              <input type="text" placeholder="Username" class="login__input" />
+              <input
+                type="text"
+                placeholder="Username"
+                class="login__input"
+                id="name"
+              />
             </div>
 
             <div class="login__box">
               <i class="bx bx-at login__icon"></i>
-              <input type="text" placeholder="Email" class="login__input" />
+              <input
+                type="text"
+                placeholder="Email"
+                class="login__input"
+                id="email2"
+              />
             </div>
 
             <div class="login__box">
               <i class="bx bx-lock login__icon"></i>
-              <input type="text" placeholder="Password" class="login__input" />
+              <input
+                type="text"
+                placeholder="Password"
+                class="login__input"
+                id="password2"
+              />
             </div>
 
-            <a href="#" class="login__button">Sign Up</a>
+            <div class="login__box">
+              <i class="bx bx-lock login__icon"></i>
+              <form
+                id="ocr_form"
+                action="http://localhost:5000/users/sign_up"
+                method="POST"
+                enctype="multipart/form-data"
+              >
+                <input type="text" class="upload-name" disabled />
+                <label for="file">사진넣기</label>
+                <input type="file" id="file" name="file" />
+              </form>
+            </div>
+
+            <a href="#" class="login__button" onclick="save_users_info()"
+              >Sign Up</a
+            >
 
             <div>
               <span class="login__account login__account--account"

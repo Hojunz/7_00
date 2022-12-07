@@ -89,7 +89,7 @@
           url: "/user_only",
           data: {},
           success: function (response) {
-            // alert(response["msg"]);
+            alert(response["msg"]);
           },
         });
       }
@@ -182,7 +182,7 @@
           <button
             type="button"
             class="btn btn-primary"
-            onclick="save_post(); user_only();"
+            onclick="user_only(); save_post()"
           >
             게시글 작성
           </button>

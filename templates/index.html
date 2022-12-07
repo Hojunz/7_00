@@ -34,7 +34,6 @@
             const posts = response["post_list"];
             if (posts.length > 0) {
               posts.forEach((post) => {
-              console.log(post[3])
                 let temp = ` 
                                             <div class="col">
                                             <div class="card h-100">
@@ -70,6 +69,22 @@
                 }
             });
         }
+
+        function move_to_mypage() {
+            $.ajax({
+                type: "POST",
+                url: "/user_only",
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        window.location.href = '/mypage'
+                    } else{
+                        alert(response['msg'])
+                    }
+
+                }
+            });
+        }
       
 
 
@@ -97,6 +112,9 @@
               </li>
               <li>
                 <button onclick="sign_out()">LOGOUT</button>
+              </li>
+              <li>
+                <button onclick="move_to_mypage()">My Page</button>
               </li>
             </ul>
           </header>
