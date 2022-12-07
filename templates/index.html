@@ -28,41 +28,55 @@
       function get_post() {
         $.ajax({
           type: "GET",
-          url: "/getpost",
+          url: "/posts/list",
           data: {},
           success: function (response) {
             const posts = response["post_list"];
             if (posts.length > 0) {
               posts.forEach((post) => {
+              console.log(post[3])
                 let temp = ` 
-                <div class="col">
+                                            <div class="col">
                                             <div class="card h-100">
-                                                <img src="${post[0]}"
+                                                <img src="../static/images/${post[3]}"
                                                      class="card-img-top">
                                                 <div class="card-body">
                                                     <h5 class="card-title">${post[0]}</h5>
                                                     <p class="card-text">${post[2]}</p>
                                                     <p class="mycomment">${post[1]}</p>
-                                                    <button type="button" class="btn btn-outline-success">수정</button>    
-                                                    <button type="button" class="btn btn-outline-danger">삭제</button>                                           
+                                                    <button onclick="window.location.href = '/write_page_update'" type="button" class="btn btn-outline-success">수정</button>    
+                                                    <button onclick="delete_post()" type="button" class="btn btn-outline-danger">삭제</button>                                           
                                                      </div>
                                                      </div> `;
                 $("#post_list").append(temp);
               });
-              // 데이터 없을 때
-            } else {
-              let temp = ``;
-              $("#cards-box").append(temp);
-            }
+            } 
           },
         });
       }
+
+      function move_to_write_page() {
+            $.ajax({
+                type: "POST",
+                url: "/user_only",
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        window.location.href = '/write_page'
+                    } else{
+                        alert(response['msg'])
+                    }
+
+                }
+            });
+        }
+      
 
 
       function sign_out() {
         $.removeCookie("mytoken", { path: "/" }); // path : 경로설정이다. 이 사이트의 모든 페이지가 해당된다면 / 이렇게 슬러시만 둔다. 그렇지 않고 특정 폴더라면 경로를 넣으면 된다.
         alert("로그아웃!");
-        window.location.href = "/login";
+        window.location.href = "/";
       }
     </script>
   </head>
@@ -91,7 +105,7 @@
           <section>
             <header class="major">
               <li>
-                  <button onclick="location.href='write_page'" class="btn-hover color-6">BUTTON</button>
+                  <button onclick="move_to_write_page()" class="btn-hover color-6">BUTTON</button>
               </li>
             </header>
             <div class="mycards">

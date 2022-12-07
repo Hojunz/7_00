@@ -76,7 +76,7 @@
     <script type="text/javascript">
       function cancel() {
         $("file", "title", "content").empty();
-        alert("게시글 작성이 취소되었습니다!");
+        alert("게시글 수정이 취소되었습니다!");
         window.location.href = "/";
       }
     </script>
@@ -89,33 +89,43 @@
           url: "/user_only",
           data: {},
           success: function (response) {
-            // alert(response["msg"]);
+            alert(response["msg"]);
           },
         });
       }
 
       function save_post() {
-        let title = $("#title").val();
-        let topic = $("#topic").val();
-        let content = $("#content").val();
-        let file = $("#file")[0].files[0];
-        let form_data = new FormData();
-
-        form_data.append("title", title);
-        form_data.append("topic", topic);
-        form_data.append("content", content);
-        form_data.append("file", file);
-
+        // const image =
+        const title = document.querySelector("#title").value;
+        const topic = document.querySelector("#topic").value;
+        const content = document.querySelector("#content").value;
         $.ajax({
           type: "POST",
           url: "/posts/save",
-          data: form_data,
-          cache: false,
-          contentType: false,
-          processData: false,
+          data: { title, topic, content },
           success: function (response) {
-            alert("작성완료!");
-            window.location.href = "/";
+            document.querySelector("#title").value = "";
+            document.querySelector("#topic").value = "";
+            document.querySelector("#content").value = "";
+            alert(response["msg"]);
+          },
+        });
+      }
+
+      function update_post() {
+        // const image =
+        const title = document.querySelector("#title").value;
+        const topic = document.querySelector("#topic").value;
+        const content = document.querySelector("#content").value;
+        $.ajax({
+          type: "PUT",
+          url: "/updatepost",
+          data: { title, topic, content },
+          success: function (response) {
+            document.querySelector("#title").value = "";
+            document.querySelector("#topic").value = "";
+            document.querySelector("#content").value = "";
+            alert(response["msg"]);
           },
         });
       }
@@ -129,7 +139,7 @@
           <p class="title">
             <i class="fa fa-compass" aria-hidden="true"></i>
             7_OO<br />
-            게시글 작성
+            게시글 수정
           </p>
         </a>
       </div>
@@ -140,16 +150,21 @@
         <img id="upload-img" class="upload-img" />
       </div>
       <div class="content">
-        <form
-          id="ocr_form"
-          action="http://localhost:5000/write_page"
-          method="POST"
-          enctype="multipart/form-data"
-        >
-          <input type="text" class="upload-name" disabled />
-          <label for="file">파일찾기</label>
-          <input type="file" id="file" name="file" />
-        </form>
+        <p>사진 업로드</p>
+        <div class="custom-file">
+          <input
+            type="file"
+            class="custom-file-input"
+            id="file"
+            accept="image/gif, image/jpeg, image/png"
+          />
+          <label
+            class="custom-file-label"
+            for="customFile"
+            style="color: rgba(42, 42, 42, 0.71)"
+            >업로드할 사진을 선택하세요.</label
+          >
+        </div>
         <div class="form-group">
           <label for="formGroupExampleInput">제목</label>
           <input
@@ -182,9 +197,9 @@
           <button
             type="button"
             class="btn btn-primary"
-            onclick="save_post(); user_only();"
+            onclick="user_only(); update_post()"
           >
-            게시글 작성
+            게시글 수정
           </button>
           <button type="button" class="btn btn-secondary" onclick="cancel()">
             취소
