@@ -71,7 +71,7 @@ def log_in():
 def write_page():
     return render_template('write_page.html')
 
-# 게시글 작성
+# 게시글 작성(로그인한 사람만 접근 가능)
 
 
 @app.route('/user_only', methods=['POST'])
@@ -87,6 +87,53 @@ def user_only():
         # return redirect("/templates/write_page.html")
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return jsonify({'msg': 'User Only Access!!!'})
+
+# 게시글 불러오기
+
+
+@app.route('/getpost')
+def get_post():
+    db = pymysql.connect(host='localhost', user='root',
+                         db='test', password='0000', charset='utf8')
+    curs = db.cursor()
+
+    sql = """
+		SELECT title,content,topic
+		FROM posts p
+		"""
+
+    curs.execute(sql)
+
+    post_list = curs.fetchall()
+
+    db.commit()
+    db.close()
+
+    return jsonify({'post_list': post_list})
+
+# 게시글 작성
+
+
+@app.route("/savepost", methods=["POST"])
+def save_post():
+    title = request.form['title']
+    topic = request.form['topic']
+    content = request.form['content']
+
+    db = pymysql.connect(host='localhost', user='root',
+                         db='test', password='0000', charset='utf8')
+    curs = db.cursor()
+
+    sql = """
+		INSERT INTO posts (title,topic, content) VALUES (%s,%s,%s)
+		"""
+
+    curs.execute(sql, (title, topic, content))
+
+    db.commit()
+    db.close()
+
+    return jsonify({'msg': '게시글 작성 완료'})
 
 
 if __name__ == '__main__':

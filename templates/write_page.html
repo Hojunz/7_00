@@ -96,6 +96,24 @@
           },
         });
       }
+
+      function save_post() {
+        // const image =
+        const title = document.querySelector("#title").value;
+        const topic = document.querySelector("#topic").value;
+        const content = document.querySelector("#content").value;
+        $.ajax({
+          type: "POST",
+          url: "/savepost",
+          data: { title, topic, content },
+          success: function (response) {
+            document.querySelector("#title").value = "";
+            document.querySelector("#topic").value = "";
+            document.querySelector("#content").value = "";
+            alert(response["msg"]);
+          },
+        });
+      }
     </script>
   </head>
 
@@ -137,22 +155,35 @@
           <input
             type="text"
             class="form-control"
-            id="formGroupExampleInput"
+            id="title"
             placeholder="제목을 입력하세요."
+          />
+        </div>
+        <div class="form-group">
+          <label for="formGroupExampleInput">토픽</label>
+          <input
+            type="text"
+            class="form-control"
+            id="topic"
+            placeholder="토픽을 입력하세요."
           />
         </div>
         <div class="form-group">
           <label for="formGroupExampleInput2">내용</label>
           <textarea
             class="form-control"
-            id="formGroupExampleInput2"
+            id="content"
             cols="50"
             rows="5"
             placeholder="내용을 입력하세요."
           ></textarea>
         </div>
         <div>
-          <button type="button" class="btn btn-primary" onclick="user_only()">
+          <button
+            type="button"
+            class="btn btn-primary"
+            onclick="user_only(); save_post()"
+          >
             게시글 작성
           </button>
           <button type="button" class="btn btn-secondary" onclick="cancel()">
