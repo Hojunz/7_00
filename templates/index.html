@@ -34,7 +34,7 @@
             const posts = response["post_list"];
             if (posts.length > 0) {
               posts.forEach((post) => {
-                let temp = ` 
+                let temp = `
                                             <div class="col">
                                             <div class="card h-100">
                                                 <img src="../static/images/${post[3]}"
@@ -43,13 +43,13 @@
                                                     <h5 class="card-title">${post[0]}</h5>
                                                     <p class="card-text">${post[2]}</p>
                                                     <p class="mycomment">${post[1]}</p>
-                                                    <button onclick="window.location.href = '/write_page_update'" type="button" class="btn btn-outline-success">수정</button>    
-                                                    <button onclick="delete_post()" type="button" class="btn btn-outline-danger">삭제</button>                                           
+                                                    <button onclick="window.location.href = '/write_page_update'" type="button" class="btn btn-outline-success">수정</button>
+                                                    <button onclick="delete_post()" type="button" class="btn btn-outline-danger">삭제</button>
                                                      </div>
                                                      </div> `;
                 $("#post_list").append(temp);
               });
-            } 
+            }
           },
         });
       }
@@ -85,7 +85,7 @@
                 }
             });
         }
-      
+
 
 
       function sign_out() {
