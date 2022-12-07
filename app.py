@@ -167,16 +167,101 @@ def user_info_get():
 
 @app.route('/user_only', methods=['POST'])
 def user_only():
-	token_receive = request.cookies.get('mytoken')
-	print(token_receive)
+	def move_to_write_page():
+		token_receive = request.cookies.get('mytoken')
 
-	try:
-		payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-		msg = payload['email'] + '님은 게시물을 작성하실 수 있습니다.'
-		# db 접근
-		return jsonify({'msg': msg})
-	except(jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-		return jsonify({'msg': 'User Only Access!!!'})
+		try:
+			jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+			return jsonify({'result': 'success'})
+		except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+			return jsonify({'result': 'fail', 'msg': '로그인을 먼저 진행해주세요!!'})
+
+	# ! 게시글 수정 페이지
+
+@app.route('/write_page')
+def write_page():
+    return render_template('write_page.html')
+@app.route('/write_page_update')
+def write_page_update():
+	return render_template('write_page_update.html')
+
+# ! 게시글 불러오기
+
+@app.route('/posts/list', methods=["GET"])
+def get_post():
+	db = pymysql.connect(host='localhost', user='root',
+						 db='test', password='0000', charset='utf8')
+	curs = db.cursor()
+
+	sql = """
+		SELECT title,content,topic,file
+		FROM posts p
+		"""
+
+	curs.execute(sql)
+
+	post_list = curs.fetchall()
+
+	db.commit()
+	db.close()
+
+	return jsonify({'post_list': post_list})
+
+# ! 게시글 작성
+
+@app.route("/posts/save", methods=["POST"])
+def save_post():
+	title = request.form['title']
+	topic = request.form['topic']
+	content = request.form['content']
+	file = request.files['file']
+
+	print(request.form)
+	extension = file.filename.split('.')[-1]
+	today = datetime.now()
+	mytime = today.strftime("%Y-%m-%d-%H-%M-%S")
+	filename = f'file-{mytime}'
+	save_to = f'{filename}.{extension}'
+	file.save(f'static/images/{save_to}')
+
+	db = pymysql.connect(host='localhost', user='root',
+						 db='test', password='0000', charset='utf8')
+	curs = db.cursor()
+
+	sql = """
+		INSERT INTO posts (title,topic,content,file) VALUES (%s,%s,%s,%s)
+		"""
+
+	curs.execute(sql, (title, topic, content, save_to))
+
+	db.commit()
+	db.close()
+
+	return jsonify({'msg': '게시글 작성 완료!'})
+
+# ! 게시글 업데이트
+
+@app.route('/updatepost', methods=["PUT"])
+def update():
+	post_id = request.form['post_id']
+	title = request.form['title']
+	topic = request.form['topic']
+	content = request.form['content']
+
+	db = pymysql.connect(host='localhost', user='root',
+						 db='test', password='0000', charset='utf8')
+	curs = db.cursor()
+
+	sql = """
+		UPDATE posts SET title = %s, topic = %s, content = %s WHERE post_id = %s
+		"""
+
+	curs.execute(sql, (title, topic, content, post_id))
+
+	db.commit()
+	db.close()
+
+	return jsonify({'msg': '게시글 수정 완료'})
 
 if __name__ == '__main__':
-    app.run('0.0.0.0', port=5000, debug=True)
+    app.run('127.0.0.1', port=5000, debug=True)
