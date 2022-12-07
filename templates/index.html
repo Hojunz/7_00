@@ -14,14 +14,17 @@
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
+
+      <!-- Scripts -->
+    <script src="../static/js/browser.min.js"></script>
+    <script src="../static/js/breakpoints.min.js"></script>
+    <script src="../static/js/util.js"></script>
+    <script src="../static/js/main.js"></script>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src=" https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <!-- <script src="{{ url_for('static', filename='common_js.js') }}"></script> -->
     <script>
-      $(document).ready(function () {
-        set_temp();
-        show_comment();
-      });
 
       function user_only() {
         $.ajax({
@@ -33,6 +36,22 @@
           },
         });
       }
+
+      function move_to_mypage() {
+            $.ajax({
+                type: "POST",
+                url: "/",
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        window.location.href = '/mypage'
+                    } else{
+                        alert(response['msg'])
+                    }
+
+                }
+            });
+        }
 
       function sign_out() {
         $.removeCookie("mytoken", { path: "/" }); // path : 경로설정이다. 이 사이트의 모든 페이지가 해당된다면 / 이렇게 슬러시만 둔다. 그렇지 않고 특정 폴더라면 경로를 넣으면 된다.
@@ -54,6 +73,7 @@
             >
             <ul class="icons">
               <li>
+                <a onclick="move_to_mypage()"> 마이페이지 </a>
                 <a href="login"><span class="label">LOGIN</span></a>
               </li>
               <li>
@@ -211,10 +231,6 @@
       </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="../static/js/browser.min.js"></script>
-    <script src="../static/js/breakpoints.min.js"></script>
-    <script src="../static/js/util.js"></script>
-    <script src="../static/js/main.js"></script>
+
   </body>
 </html>
