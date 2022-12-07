@@ -54,7 +54,7 @@ def move_to_mypage():
 def login():
 	return render_template('login.html')
 
-@app.route('/log_in', methods=['POST'])
+@app.route('/login', methods=['POST'])
 def log_in():
 	email_receive = request.form["email_give"]
 	password_receive = request.form["password_give"]
@@ -62,7 +62,6 @@ def log_in():
 	# print(password_receive)
 
 	db = pymysql.connect(host='localhost', user='root', db='flask_test', password='12345678', charset='utf8')
-	# db = pymysql.connect(host='localhost', user='root', db='flask_test', password='12345678', charset='utf8')
 	# curs = db.cursor()
 	curs = db.cursor(pymysql.cursors.DictCursor)
 
