@@ -1,64 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <!-- Webpage Title -->
     <title>7_OO</title>
 
     <!-- Required meta tags -->
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
     <link
-      rel="shortcut icon"
-      href="{{ url_for('static', filename='favicon.ico') }}"
-      type="image/x-icon"
+            rel="shortcut icon"
+            href="{{ url_for('static', filename='favicon.ico') }}"
+            type="image/x-icon"
     />
     <link
-      rel="icon"
-      href="{{ url_for('static', filename='favicon.ico') }}"
-      type="image/x-icon"
+            rel="icon"
+            href="{{ url_for('static', filename='favicon.ico') }}"
+            type="image/x-icon"
     />
-    <meta property="og:title" content="Daily Hangae" />
+    <meta property="og:title" content="Daily Hangae"/>
     <meta
-      property="og:description"
-      content="항해를 진행하며 하루하루를 기록해보자"
+            property="og:description"
+            content="항해를 진행하며 하루하루를 기록해보자"
     />
     <meta
-      property="og:image"
-      content="{{ url_for('static', filename='ogimg.png') }}"
+            property="og:image"
+            content="{{ url_for('static', filename='ogimg.png') }}"
     />
 
     <!-- Bootstrap CSS -->
     <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-      crossorigin="anonymous"
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+            crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="../static/css/write_page.css" />
+    <link rel="stylesheet" href="../static/css/write_page.css"/>
 
     <!-- Bulma CSS -->
     <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css"
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css"
     />
 
     <!-- Font Awesome CSS -->
     <link
-      href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-      rel="stylesheet"
+            href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+            rel="stylesheet"
     />
-    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com"/>
     <link
-      href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
-      rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
+            rel="stylesheet"
     />
-    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com"/>
     <link
-      href="https://fonts.googleapis.com/css2?family=Black+And+White+Picture&display=swap"
-      rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Black+And+White+Picture&display=swap"
+            rel="stylesheet"
     />
 
     <!-- JS -->
@@ -66,146 +66,183 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 
     <!-- 구글폰트 -->
-    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com"/>
     <link
-      href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
-      rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
+            rel="stylesheet"
     />
-    <link rel="icon" type="image/png" href="http://example.com/myicon.png" />
+    <link rel="icon" type="image/png" href="http://example.com/myicon.png"/>
 
     <script type="text/javascript">
-      function cancel() {
-        $("file", "title", "content").empty();
-        alert("게시글 수정이 취소되었습니다!");
-        window.location.href = "/";
-      }
+        function cancel() {
+            $("file", "title", "content").empty();
+            alert("게시글 수정이 취소되었습니다!");
+            window.location.href = "/";
+        }
     </script>
     <script>
-      $(document).ready(function () {});
-
-      function user_only() {
-        $.ajax({
-          type: "POST",
-          url: "/user_only",
-          data: {},
-          success: function (response) {
-            alert(response["msg"]);
-          },
+        $(document).ready(function () {
         });
-      }
 
-      function save_post() {
-        // const image =
-        const title = document.querySelector("#title").value;
-        const topic = document.querySelector("#topic").value;
-        const content = document.querySelector("#content").value;
-        $.ajax({
-          type: "POST",
-          url: "/posts/save",
-          data: { title, topic, content },
-          success: function (response) {
-            document.querySelector("#title").value = "";
-            document.querySelector("#topic").value = "";
-            document.querySelector("#content").value = "";
-            alert(response["msg"]);
-          },
-        });
-      }
+        function user_only() {
+            $.ajax({
+                type: "POST",
+                url: "/user_only",
+                data: {},
+                success: function (response) {
+                    alert(response["msg"]);
+                },
+            });
+        }
 
-      function update_post() {
-        // const image =
-        const title = document.querySelector("#title").value;
-        const topic = document.querySelector("#topic").value;
-        const content = document.querySelector("#content").value;
-        $.ajax({
-          type: "PUT",
-          url: "/updatepost",
-          data: { title, topic, content },
-          success: function (response) {
-            document.querySelector("#title").value = "";
-            document.querySelector("#topic").value = "";
-            document.querySelector("#content").value = "";
-            alert(response["msg"]);
-          },
-        });
-      }
+        function save_post() {
+            // const image =
+            const title = document.querySelector("#title").value;
+            const topic = document.querySelector("#topic").value;
+            const content = document.querySelector("#content").value;
+            $.ajax({
+                type: "POST",
+                url: "/posts/save",
+                data: {title, topic, content},
+                success: function (response) {
+                    document.querySelector("#title").value = "";
+                    document.querySelector("#topic").value = "";
+                    document.querySelector("#content").value = "";
+                    alert(response["msg"]);
+                },
+            });
+        }
+
+        // function save_post() {
+        //     // const image =
+        //     const title = document.querySelector("#title").value;
+        //     const topic = document.querySelector("#topic").value;
+        //     const content = document.querySelector("#content").value;
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "/posts/save",
+        //         data: {title, topic, content},
+        //         success: function (response) {
+        //             document.querySelector("#title").value = "";
+        //             document.querySelector("#topic").value = "";
+        //             document.querySelector("#content").value = "";
+        //             alert(response["msg"]);
+        //         },
+        //     });
+        // }
+
+        function update_post() {
+            // const image =
+            let title = $("#title").val();
+            let topic = $("#topic").val();
+            let content = $("#content").val();
+            let post_id = $("#post_id").val();
+            let form_data = new FormData();
+
+            form_data.append('title_give', title)
+            form_data.append('topic_give', topic)
+            form_data.append('content_give', content)
+            form_data.append('post_id_give', post_id)
+            $.ajax({
+                type: "PUT",
+                url: "/updatepost",
+                data: form_data,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.href = '/'
+                }
+            });
+        }
+
     </script>
-  </head>
+</head>
 
-  <body>
-    <section class="hero is-success is-info">
-      <div class="hero-body">
+
+<body>
+<section class="hero is-success is-info">
+    <div class="hero-body">
         <a href="/">
-          <p class="title">
-            <i class="fa fa-compass" aria-hidden="true"></i>
-            7_OO<br />
-            게시글 수정
-          </p>
+            <p class="title">
+                <i class="fa fa-compass" aria-hidden="true"></i>
+                7_OO<br/>
+                게시글 수정
+            </p>
         </a>
-      </div>
-    </section>
-    <!-- content -->
-    <div class="wrap">
-      <div class="view-img" id="imagePreview">
-        <img id="upload-img" class="upload-img" />
-      </div>
-      <div class="content">
+    </div>
+</section>
+<!-- content -->
+<div class="wrap">
+    <div class="view-img" id="imagePreview">
+        <img id="upload-img" class="upload-img"/>
+    </div>
+    <div class="content">
         <p>사진 업로드</p>
         <div class="custom-file">
-          <input
-            type="file"
-            class="custom-file-input"
-            id="file"
-            accept="image/gif, image/jpeg, image/png"
-          />
-          <label
-            class="custom-file-label"
-            for="customFile"
-            style="color: rgba(42, 42, 42, 0.71)"
+            <input
+                    type="file"
+                    class="custom-file-input"
+                    id="file"
+                    accept="image/gif, image/jpeg, image/png"
+            />
+            <label
+                    class="custom-file-label"
+                    for="customFile"
+                    style="color: rgba(42, 42, 42, 0.71)"
             >업로드할 사진을 선택하세요.</label
-          >
+            >
         </div>
         <div class="form-group">
-          <label for="formGroupExampleInput">제목</label>
-          <input
-            type="text"
-            class="form-control"
-            id="title"
-            placeholder="제목을 입력하세요."
-          />
+            <label for="formGroupExampleInput">제목</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="title"
+                    placeholder="제목을 입력하세요."
+            />
         </div>
         <div class="form-group">
-          <label for="formGroupExampleInput">토픽</label>
-          <input
-            type="text"
-            class="form-control"
-            id="topic"
-            placeholder="토픽을 입력하세요."
-          />
+            <label for="formGroupExampleInput">토픽</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="topic"
+                    placeholder="토픽을 입력하세요."
+            />
+            <input
+                    type="hidden"
+                    class="form-control"
+                    id="post_id"
+                    placeholder="토픽을 입력하세요."
+                    value='{{id}}'
+            />
+
         </div>
         <div class="form-group">
-          <label for="formGroupExampleInput2">내용</label>
-          <textarea
-            class="form-control"
-            id="content"
-            cols="50"
-            rows="5"
-            placeholder="내용을 입력하세요."
-          ></textarea>
+            <label for="formGroupExampleInput2">내용</label>
+            <textarea
+                    class="form-control"
+                    id="content"
+                    cols="50"
+                    rows="5"
+                    placeholder="내용을 입력하세요."
+            ></textarea>
         </div>
         <div>
-          <button
-            type="button"
-            class="btn btn-primary"
-            onclick="user_only(); update_post()"
-          >
-            게시글 수정
-          </button>
-          <button type="button" class="btn btn-secondary" onclick="cancel()">
-            취소
-          </button>
+            <button
+                    type="button"
+                    class="btn btn-primary"
+                    onclick="user_only(); update_post()"
+            >
+                게시글 수정
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="cancel()">
+                취소
+            </button>
         </div>
-      </div>
     </div>
-  </body>
+</div>
+</body>
 </html>

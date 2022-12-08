@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>7_OO</title>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, user-scalable=no"
+            name="viewport"
+            content="width=device-width, initial-scale=1, user-scalable=no"
     />
-    <link rel="stylesheet" href="../static/css/main.css" />
+    <link rel="stylesheet" href="../static/css/main.css"/>
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-      crossorigin="anonymous"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+            crossorigin="anonymous"
     />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
@@ -21,20 +21,21 @@
     <script src=" https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <!-- <script src="{{ url_for('static', filename='common_js.js') }}"></script> -->
     <script>
-      $(document).ready(function () {
-        get_post();
-      });
 
-      function get_post() {
-        $.ajax({
-          type: "GET",
-          url: "/posts/list",
-          data: {},
-          success: function (response) {
-            const posts = response["post_list"];
-            if (posts.length > 0) {
-              posts.forEach((post) => {
-                let temp = `
+        $(document).ready(function () {
+            get_post();
+        });
+
+        function get_post() {
+            $.ajax({
+                type: "GET",
+                url: "/posts/list",
+                data: {},
+                success: function (response) {
+                    const posts = response["post_list"];
+                    if (posts.length > 0) {
+                        posts.forEach((post) => {
+                            let temp = `
                                             <div class="col">
                                             <div class="card h-100">
                                                 <img src="../static/images/${post[3]}"
@@ -43,18 +44,18 @@
                                                     <h5 class="card-title">${post[0]}</h5>
                                                     <p class="card-text">${post[2]}</p>
                                                     <p class="mycomment">${post[1]}</p>
-                                                    <button onclick="window.location.href = '/write_page_update'" type="button" class="btn btn-outline-success">수정</button>
-                                                    <button onclick="delete_post()" type="button" class="btn btn-outline-danger">삭제</button>
+                                                    <button onclick="window.location.href = '/write_page_update/${post[4]}'" type="button" class="btn btn-outline-success">수정</button>
+                                                    <button type="button" onclick="delete_post(${post[4]})" class="btn btn-outline-danger">삭제</button>
                                                      </div>
                                                      </div> `;
-                $("#post_list").append(temp);
-              });
-            }
-          },
-        });
-      }
+                            $("#post_list").append(temp);
+                        });
+                    }
+                },
+            });
+        }
 
-      function move_to_write_page() {
+        function move_to_write_page() {
             $.ajax({
                 type: "POST",
                 url: "/user_only",
@@ -62,7 +63,7 @@
                 success: function (response) {
                     if (response['result'] == 'success') {
                         window.location.href = '/write_page'
-                    } else{
+                    } else {
                         alert(response['msg'])
                     }
 
@@ -78,7 +79,7 @@
                 success: function (response) {
                     if (response['result'] == 'success') {
                         window.location.href = '/mypage'
-                    } else{
+                    } else {
                         alert(response['msg'])
                     }
 
@@ -86,107 +87,77 @@
             });
         }
 
+        //게시글 삭제 --------------------------------------------------
+        function delete_post(post_id) {
 
+            $.ajax({
+                type: "DELETE",
+                url: "/deletepost",
+                dataType: "json",
+                data: {post_id},
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload();
+                }
+            });
+        }
 
-      function sign_out() {
-        $.removeCookie("mytoken", { path: "/" }); // path : 경로설정이다. 이 사이트의 모든 페이지가 해당된다면 / 이렇게 슬러시만 둔다. 그렇지 않고 특정 폴더라면 경로를 넣으면 된다.
-        alert("로그아웃!");
-        window.location.href = "/";
-      }
+        // 로그아웃 -------------------------------------------
+
+        function sign_out() {
+            $.removeCookie("mytoken", {path: "/"}); // path : 경로설정이다. 이 사이트의 모든 페이지가 해당된다면 / 이렇게 슬러시만 둔다. 그렇지 않고 특정 폴더라면 경로를 넣으면 된다.
+            alert("로그아웃!");
+            window.location.href = "/";
+        }
     </script>
-  </head>
-  <body class="is-preload">
-    <!-- Wrapper -->
-    <div id="wrapper">
-      <!-- Main -->
-      <div id="main">
+</head>
+<body class="is-preload">
+<!-- Wrapper -->
+<div id="wrapper">
+    <!-- Main -->
+    <div id="main">
         <div class="inner">
-          <!-- Header -->
-          <header id="header">
-            <a href="/" class="logo"
-              ><strong>7_OO 에 오신걸 환영합니다!</strong></a
-            >
-            <ul class="icons">
-              <li>
-                <a href="login"><span class="label">LOGIN</span></a>
-              </li>
-              <li>
-                <button onclick="sign_out()">LOGOUT</button>
-              </li>
-              <li>
-                <button onclick="move_to_mypage()">My Page</button>
-              </li>
-            </ul>
-          </header>
 
-          <!-- Section -->
-          <section>
-            <header class="major">
-              <li>
-                  <button onclick="move_to_write_page()" class="btn-hover color-6">BUTTON</button>
-              </li>
-            </header>
-            <div class="mycards">
-              <div class="row row-cols-1 row-cols-md-4 g-4" id="post_list">
-              </div>
-          </div>
-            </div>
-          </section>
-        </div>
-      </div>
-
-      <!-- Sidebar -->
-      <div id="sidebar">
-        <div class="inner">
-          <!-- Search -->
-          <section id="search" class="alt">
-            <form method="post" action="#">
-              <input type="text" name="query" id="query" placeholder="Search" />
-            </form>
-          </section>
-
-          <!-- Menu -->
-          <nav id="menu">
-            <header class="major">
-              <h2>Menu</h2>
-            </header>
-            <ul>
-              <li><a href="index.html">Homepage</a></li>
-              <li><a href="generic.html">Generic</a></li>
-              <li><a href="elements.html">Elements</a></li>
-              <li>
-                <span class="opener">Submenu</span>
-                <ul>
-                  <li><a href="#">Lorem Dolor</a></li>
-                  <li><a href="#">Ipsum Adipiscing</a></li>
-                  <li><a href="#">Tempus Magna</a></li>
-                  <li><a href="#">Feugiat Veroeros</a></li>
+            <!-- Header -->
+            <header id="header">
+                <a href="/" class="logo"
+                ><strong>7_OO 에 오신걸 환영합니다!</strong></a
+                >
+                <ul class="icons">
+                    <li>
+                        <button onclick="location.href='/login'">LOGIN</button>
+                    </li>
+                    <li>
+                        <button onclick="sign_out()">LOGOUT</button>
+                    </li>
+                    <li>
+                        <button onclick="move_to_mypage()">My Page</button>
+                    </li>
                 </ul>
-              </li>
-              <li><a href="#">Etiam Dolore</a></li>
-              <li><a href="#">Adipiscing</a></li>
-              <li>
-                <span class="opener">Another Submenu</span>
-                <ul>
-                  <li><a href="#">Lorem Dolor</a></li>
-                  <li><a href="#">Ipsum Adipiscing</a></li>
-                  <li><a href="#">Tempus Magna</a></li>
-                  <li><a href="#">Feugiat Veroeros</a></li>
-                </ul>
-              </li>
-              <li><a href="#">Maximus Erat</a></li>
-              <li><a href="#">Sapien Mauris</a></li>
-              <li><a href="#">Amet Lacinia</a></li>
-            </ul>
-          </nav>
+            </header>
+
+
+            <!-- Section -->
+            <section>
+                <header class="major">
+                    <li>
+                        <button onclick="move_to_write_page()" class="btn-hover color-6">게시글 작성</button>
+                    </li>
+                </header>
+                <div class="mycards">
+                    <div class="row row-cols-1 row-cols-md-4 g-4" id="post_list">
+                    </div>
+                </div>
+
+            </section>
         </div>
-      </div>
     </div>
+</div>
 
-    <!-- Scripts -->
-    <script src="../static/js/browser.min.js"></script>
-    <script src="../static/js/breakpoints.min.js"></script>
-    <script src="../static/js/util.js"></script>
-    <script src="../static/js/main.js"></script>
-  </body>
+<!-- Scripts -->
+<script src="../static/js/browser.min.js"></script>
+<script src="../static/js/breakpoints.min.js"></script>
+<script src="../static/js/util.js"></script>
+<script src="../static/js/main.js"></script>
+</body>
 </html>
