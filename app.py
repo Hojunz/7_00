@@ -8,6 +8,8 @@ from datetime import datetime, timedelta
 import json
 # 토큰 발행
 import jwt
+# 비밀번호 암호화.
+import hashlib
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -61,10 +63,11 @@ def login():
 def log_in():
     email_receive = request.form["email_give"]
     password_receive = request.form["password_give"]
+    pw_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
     # print(email_receive)
-    # print(password_receive)
+    print(pw_hash)
 
-    db = pymysql.connect(host='localhost', user='root', db='test', password='!', charset='utf8')
+    db = pymysql.connect(host='localhost', user='root', db='test', password='12345678', charset='utf8')
     # curs = db.cursor()
     curs = db.cursor(pymysql.cursors.DictCursor)
 
@@ -84,7 +87,7 @@ def log_in():
     db.commit()
     db.close()
 
-    if users_result['password'] != password_receive:
+    if users_result['password'] != pw_hash:
         msg = "비밀번호가 일치하지 않습니다. 다시 로그인해주세요."
         return jsonify({'result': 'fail', 'msg': msg})
     else:
@@ -109,28 +112,32 @@ def save_users_info():
     email_receive = request.form['email2_give']
     password_receive = request.form['password_give']
     # password2_receive = request.form['password2_give']
+    password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
+    # print(password_hash)
     name_receive = request.form['name_give']
 
     file = request.files["file_give"]
-    print(file)
+    # print(file)
     extension = file.filename.split('.')[-1]
     today = datetime.now()
     mytime = today.strftime("%Y-%m-%d-%H-%M-%S")
     filename = f'file-{mytime}'
     save_to = f'{filename}.{extension}'
     file.save(f'static/images/{save_to}')
-    print(save_to)
+
+    # print(save_to)
 
 
-    db = pymysql.connect(host='localhost', user='root', db='test', password='!', charset='utf8')
+    db = pymysql.connect(host='localhost', user='root', db='test', password='12345678', charset='utf8')
     curs = db.cursor()
+    # curs = db.cursor(pymysql.cursors.DictCursor)
 
     sql = """
 		insert into user (email, password, name, regdate, filename)
          values (%s,%s,%s,%s,%s)
 		"""
 
-    curs.execute(sql, (email_receive, password_receive, name_receive, mytime, save_to))
+    curs.execute(sql, (email_receive, password_hash, name_receive, mytime, save_to))
 
     users_result = curs.fetchall()
     # print(users_result[0][1] != password_receive)
@@ -153,7 +160,7 @@ def user_info_get():
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
     target_id = payload['id']
 
-    db = pymysql.connect(host='localhost', user='root', db='test', password='!', charset='utf8')
+    db = pymysql.connect(host='localhost', user='root', db='test', password='12345678', charset='utf8')
     curs = db.cursor(pymysql.cursors.DictCursor)
 
     sql = """
@@ -249,8 +256,7 @@ def write_page_update():
 
 @app.route('/posts/list', methods=["GET"])
 def get_post():
-    db = pymysql.connect(host='localhost', user='root',
-                         db='test', password='!', charset='utf8')
+    db = pymysql.connect(host='localhost', user='root', db='test', password='12345678', charset='utf8')
     curs = db.cursor()
 
     sql = """
@@ -290,8 +296,7 @@ def save_post():
     file.save(f'static/images/{save_to}')
 
 
-    db = pymysql.connect(host='localhost', user='root',
-                         db='test', password='!', charset='utf8')
+    db = pymysql.connect(host='localhost', user='root', db='test', password='12345678', charset='utf8')
     curs = db.cursor()
 
     sql = """
@@ -318,8 +323,7 @@ def update_post():
     topic_receive = request.form['topic_give']
     content_receive = request.form['content_give']
 
-    db = pymysql.connect(host='localhost', user='root',
-                         db='test', password='!', charset='utf8')
+    db = pymysql.connect(host='localhost', user='root', db='test', password='12345678', charset='utf8')
     curs = db.cursor()
 
     sql = """
