@@ -121,6 +121,7 @@ def save_users_info():
     file.save(f'static/images/{save_to}')
     print(save_to)
 
+
     db = pymysql.connect(host='localhost', user='root', db='test', password='!', charset='utf8')
     curs = db.cursor()
 
@@ -171,6 +172,54 @@ def user_info_get():
     db.close()
 
     return jsonify({'msg': 'GET 연결 완료!', 'user_info': users_result})
+
+@app.route('/user_info/edit', methods=['PUT'])
+def edit_done():
+    token_receive = request.cookies.get('mytoken')
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    target_id = payload['id']
+    print(target_id)
+
+    email_receive = request.form['email_edit_give']
+    password_receive = request.form['password_edit_give']
+    # password2_receive = request.form['password2_give']
+    name_receive = request.form['name_edit_give']
+
+    file = request.files["file_edit_give"]
+    print(file)
+    extension = file.filename.split('.')[-1]
+    today = datetime.now()
+    mytime = today.strftime("%Y-%m-%d-%H-%M-%S")
+    filename = f'file-{mytime}'
+    save_to = f'{filename}.{extension}'
+    file.save(f'static/images/{save_to}')
+    print(save_to)
+
+    db = pymysql.connect(host='localhost', user='root', db='flask_test', password='12345678', charset='utf8')
+    curs = db.cursor()
+
+    sql = """
+         UPDATE
+                user
+            SET
+                email = %s,
+                password = %s,
+                name = %s,
+                filename = %s
+            WHERE
+                user_id = %s;
+		"""
+
+    curs.execute(sql, (email_receive, password_receive, name_receive, save_to, target_id))
+
+    users_result = curs.fetchall()
+    # print(users_result[0][1] != password_receive)
+
+    json_str = json.dumps(users_result, indent=4, sort_keys=True, default=str)
+    db.commit()
+    db.close()
+
+    return jsonify({"result": "success", 'msg': '마이페이지 정보 수정 완료!'})
 
 
 @app.route('/user_only', methods=['POST'])
@@ -235,6 +284,7 @@ def save_post():
     filename = f'file-{mytime}'
     save_to = f'{filename}.{extension}'
     file.save(f'static/images/{save_to}')
+
 
     db = pymysql.connect(host='localhost', user='root',
                          db='test', password='!', charset='utf8')
