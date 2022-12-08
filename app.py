@@ -121,7 +121,6 @@ def save_users_info():
     file.save(f'static/images/{save_to}')
     print(save_to)
 
-
     db = pymysql.connect(host='localhost', user='root', db='test', password='!', charset='utf8')
     curs = db.cursor()
 
@@ -172,6 +171,7 @@ def user_info_get():
     db.close()
 
     return jsonify({'msg': 'GET 연결 완료!', 'user_info': users_result})
+
 
 @app.route('/user_info/edit', methods=['PUT'])
 def edit_done():
@@ -240,9 +240,10 @@ def write_page():
     return render_template('write_page.html')
 
 
-@app.route('/write_page_update')
-def write_page_update():
-    return render_template('write_page_update.html')
+@app.route('/write_page_update/<id>')
+def write_page_update(id):
+    print(id)
+    return render_template('write_page_update.html', id=id)
 
 
 # ! 게시글 불러오기
@@ -254,7 +255,7 @@ def get_post():
     curs = db.cursor()
 
     sql = """
-		SELECT title,content,topic,filename
+		SELECT title,content,topic,filename,post_id
 		FROM post p
 		"""
 
@@ -289,7 +290,6 @@ def save_post():
     save_to = f'{filename}.{extension}'
     file.save(f'static/images/{save_to}')
 
-
     db = pymysql.connect(host='localhost', user='root',
                          db='test', password='!', charset='utf8')
     curs = db.cursor()
@@ -317,6 +317,7 @@ def update_post():
     title_receive = request.form['title_give']
     topic_receive = request.form['topic_give']
     content_receive = request.form['content_give']
+    post_id_receive = request.form['post_id_give']
 
     db = pymysql.connect(host='localhost', user='root',
                          db='test', password='!', charset='utf8')
@@ -326,12 +327,38 @@ def update_post():
 		UPDATE post SET title = %s, topic = %s, content = %s WHERE post_id = %s 
 		"""
 
-    curs.execute(sql, (title_receive, topic_receive, content_receive, target_id))
+    curs.execute(sql, (title_receive, topic_receive, content_receive, post_id_receive))
 
     db.commit()
     db.close()
 
     return jsonify({"result": "success", 'msg': '게시글 수정 완료!'})
+
+
+# 삭제 기능--------------------------------------------------
+
+@app.route('/deletepost', methods=["DELETE"])
+def delete():
+    token_receive = request.cookies.get('mytoken')
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    target_id = payload['id']
+
+    post_id = request.form['post_id']
+    print(request.form['post_id'])
+    db = pymysql.connect(host='localhost', user='root',
+                         db='test', password='!', charset='utf8')
+    curs = db.cursor()
+
+    sql = """
+		DELETE FROM post WHERE post_id = %s and user_id = %s
+		"""
+
+    curs.execute(sql, (post_id, target_id))
+
+    db.commit()
+    db.close()
+
+    return jsonify({"result": "success", 'msg': '게시글 삭제 완료!'})
 
 
 if __name__ == '__main__':
