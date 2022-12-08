@@ -1,103 +1,112 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
-
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
 
     <title>My page</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap"
+      rel="stylesheet"
+    />
 
     <style>
-        * {
-            font-family: 'Gowun Dodum', sans-serif;
-        }
-        table {
-            margin: auto;
-            margin-top: 20px;
-            border: 1px solid #444444;
-        }
+      * {
+        font-family: "Gowun Dodum", sans-serif;
+      }
+      table {
+        margin: auto;
+        margin-top: 20px;
+        border: 1px solid #444444;
+      }
 
-        th, td {
-            text-align: center;
+      th,
+      td {
+        text-align: center;
 
-            border-bottom: 1px solid #444444;
-            /*border-left: 1px solid #444444;*/
-            padding: 10px;
-        }
+        border-bottom: 1px solid #444444;
+        /*border-left: 1px solid #444444;*/
+        padding: 10px;
+      }
 
-        .find-btn {
-            text-align: center;
-        }
+      .find-btn {
+        text-align: center;
+      }
 
-        .find-btn1 {
-            display: inline-block;
-        }
+      .find-btn1 {
+        display: inline-block;
+      }
     </style>
 
     <script>
-        $(document).ready(function () {
-            show_user_info();
-        });
+      $(document).ready(function () {
+        show_user_info();
+      });
 
-        function show_user_info() {
-            $('#info-box').empty()
-            $.ajax({
-                type: "GET",
-                url: '/user_info',
-                data: {},
-                success: function (response) {
-                    // alert(response['msg'])
-                    console.log(response['user_info'])
-                    let rows = response['user_info']
-                    // console.log(rows['email'])
+      function show_user_info() {
+        $("#info-box").empty();
+        $.ajax({
+          type: "GET",
+          url: "/users/info",
+          data: {},
+          success: function (response) {
+            // alert(response['msg'])
+            console.log(response["user_info"]);
+            let rows = response["user_info"];
+            // console.log(rows['email'])
 
-                    let email = rows['email']
-                    let password = rows['password']
-                    let name = rows['name']
-                    let profile = rows['filename']
+            let email = rows["email"];
+            let password = rows["password"];
+            let name = rows["name"];
+            let profile = rows["filename"];
 
-
-                    let temp_html = `<tr>
+            let temp_html = `<tr>
                                         <td align=center valign=middle>${email}</td>
                                         <td align=center valign=middle>${password}</tdv>
                                         <td align=center valign=middle>${name}</td>
                                         <td align=center valign=middle><img src="../static/images/${profile}" alt="${email} profile"></td>
-                                    </tr>`
-                    $('#info-box').append(temp_html)
+                                    </tr>`;
+            $("#info-box").append(temp_html);
+          },
+        });
+      }
 
-                }
-            });
-        }
+      function edit_info() {
+        $("#info-box").empty();
 
-        function edit_info() {
-            $('#info-box').empty()
+        $.ajax({
+          type: "GET",
+          url: "/users/info",
+          data: {},
+          success: function (response) {
+            // alert(response['msg'])
+            // console.log(response['user_info'])
+            let rows = response["user_info"];
+            // console.log(rows['email'])
 
-            $.ajax({
-                type: "GET",
-                url: '/user_info',
-                data: {},
-                success: function (response) {
-                    // alert(response['msg'])
-                    // console.log(response['user_info'])
-                    let rows = response['user_info']
-                    // console.log(rows['email'])
+            let email = rows["email"];
+            let password = rows["password"];
+            let name = rows["name"];
+            let profile = rows["filename"];
 
-                    let email = rows['email']
-                    let password = rows['password']
-                    let name = rows['name']
-                    let profile = rows['filename']
-
-                    let temp_html = `<tr>
+            let temp_html = `<tr>
                                         <td><input id="edit-email" type="text" value="${email}"></td>
                                         <td><input id="edit-pw" type="text" value="${password}"></td>
                                         <td><input id="edit-name" type="text" value="${name}"></td>
@@ -106,85 +115,82 @@
                                                 <input type="file" id="file" name="file">
                                             </form>
                                         </td>
-                                    </tr>`
-                    $('#info-box').append(temp_html)
+                                    </tr>`;
+            $("#info-box").append(temp_html);
 
-                    // console.log($('#edit-email').val())
-
-                }
-            });
-        }
-
-        function edit_done() {
             // console.log($('#edit-email').val())
-            // console.log($('#edit-pw').val())
-            // console.log($('#edit-name').val())
+          },
+        });
+      }
 
-            let edit_email = $('#edit-email').val()
-            let edit_pw = $('#edit-pw').val()
-            let edit_name = $('#edit-name').val()
-            let file = $("#file")[0].files[0];
-            console.log(file)
+      function edit_done() {
+        // console.log($('#edit-email').val())
+        // console.log($('#edit-pw').val())
+        // console.log($('#edit-name').val())
 
-            let form_data = new FormData();
+        let edit_email = $("#edit-email").val();
+        let edit_pw = $("#edit-pw").val();
+        let edit_name = $("#edit-name").val();
+        let file = $("#file")[0].files[0];
+        console.log(file);
 
-            form_data.append("file_edit_give", file);
-            form_data.append("email_edit_give", edit_email);
-            form_data.append("password_edit_give", edit_pw);
-            // form_data.append("password2_give", password2);
-            form_data.append("name_edit_give", edit_name);
+        let form_data = new FormData();
 
-            $.ajax({
-                type: "PUT",
-                url: '/user_info/edit',
-                data: form_data,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success: function (response) {
-                    alert(response["msg"])
-                    window.location.reload();
-                }
-            });
-        }
+        form_data.append("file_edit_give", file);
+        form_data.append("email_edit_give", edit_email);
+        form_data.append("password_edit_give", edit_pw);
+        // form_data.append("password2_give", password2);
+        form_data.append("name_edit_give", edit_name);
+
+        $.ajax({
+          type: "PUT",
+          url: "/users/info/edit",
+          data: form_data,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function (response) {
+            alert(response["msg"]);
+            window.location.href = "/";
+          },
+        });
+      }
     </script>
+  </head>
+  <body>
+    <table class="table table-success table-striped" style="width: 50%">
+      <thead>
+        <tr>
+          <th>이메일</th>
+          <th>비밀번호</th>
+          <th>이름</th>
+          <th>프로필</th>
+        </tr>
+      </thead>
 
-</head>
-<body>
+      <tbody id="info-box">
+        <!--        <tr>-->
+        <!--            <td><input id="edit-email" type="text" value="bbbb"></td>-->
+        <!--            <td><input type="text" value="2222"></td>-->
+        <!--            <td><input type="text" value="brain"></td>-->
+        <!--            <td>-->
+        <!--                <form id="ocr_form" action="http://localhost:5000/sign_up" method="POST" enctype="multipart/form-data">-->
+        <!--                    <input type="file" id="file" name="file">-->
+        <!--                </form>-->
+        <!--            </td>-->
+        <!--        </tr>-->
+      </tbody>
+    </table>
 
+    <hr />
 
-<table class="table table-success table-striped" style="width: 50%">
-    <thead>
-    <tr>
-        <th>이메일</th>
-        <th>비밀번호</th>
-        <th>이름</th>
-        <th>프로필</th>
-    </tr>
-    </thead>
-
-    <tbody id="info-box">
-<!--        <tr>-->
-<!--            <td><input id="edit-email" type="text" value="bbbb"></td>-->
-<!--            <td><input type="text" value="2222"></td>-->
-<!--            <td><input type="text" value="brain"></td>-->
-<!--            <td>-->
-<!--                <form id="ocr_form" action="http://localhost:5000/sign_up" method="POST" enctype="multipart/form-data">-->
-<!--                    <input type="file" id="file" name="file">-->
-<!--                </form>-->
-<!--            </td>-->
-<!--        </tr>-->
-    </tbody>
-</table>
-
-
-<hr>
-
-<div class="find-btn">
-    <button onclick="edit_info()" type="button" class="btn btn-success">수정하기</button>
-    <button onclick="edit_done()" type="button" class="btn btn-success">수정완료</button>
-</div>
-
-
-</body>
+    <div class="find-btn">
+      <button onclick="edit_info()" type="button" class="btn btn-success">
+        수정하기
+      </button>
+      <button onclick="edit_done()" type="button" class="btn btn-success">
+        수정완료
+      </button>
+    </div>
+  </body>
 </html>

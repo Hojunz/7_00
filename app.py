@@ -50,7 +50,7 @@ def move_to_mypage():
     try:
         jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         return jsonify({'result': 'success'})
-    except(jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return jsonify({'result': 'fail', 'msg': '로그인을 먼저 진행해주세요!!'})
 
 
@@ -67,7 +67,8 @@ def log_in():
     # print(email_receive)
     print(pw_hash)
 
-    db = pymysql.connect(host='localhost', user='root', db='test', password='emznp2xk!', charset='utf8')
+    db = pymysql.connect(host='localhost', user='root',
+                         db='test', password='0000', charset='utf8')
     # curs = db.cursor()
     curs = db.cursor(pymysql.cursors.DictCursor)
 
@@ -112,7 +113,8 @@ def save_users_info():
     email_receive = request.form['email2_give']
     password_receive = request.form['password_give']
     # password2_receive = request.form['password2_give']
-    password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
+    password_hash = hashlib.sha256(
+        password_receive.encode('utf-8')).hexdigest()
     # print(password_hash)
     name_receive = request.form['name_give']
 
@@ -127,8 +129,8 @@ def save_users_info():
 
     # print(save_to)
 
-
-    db = pymysql.connect(host='localhost', user='root', db='test', password='emznp2xk!', charset='utf8')
+    db = pymysql.connect(host='localhost', user='root',
+                         db='test', password='0000', charset='utf8')
 
     curs = db.cursor()
     # curs = db.cursor(pymysql.cursors.DictCursor)
@@ -138,7 +140,8 @@ def save_users_info():
          values (%s,%s,%s,%s,%s)
 		"""
 
-    curs.execute(sql, (email_receive, password_hash, name_receive, mytime, save_to))
+    curs.execute(sql, (email_receive, password_hash,
+                 name_receive, mytime, save_to))
 
     users_result = curs.fetchall()
     # print(users_result[0][1] != password_receive)
@@ -155,13 +158,14 @@ def mypage():
     return render_template('mypage.html')
 
 
-@app.route("/user_info", methods=["GET"])
+@app.route("/users/info", methods=["GET"])
 def user_info_get():
     token_receive = request.cookies.get('mytoken')
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
     target_id = payload['id']
 
-    db = pymysql.connect(host='localhost', user='root', db='test', password='emznp2xk!', charset='utf8')
+    db = pymysql.connect(host='localhost', user='root',
+                         db='test', password='0000', charset='utf8')
     curs = db.cursor(pymysql.cursors.DictCursor)
 
     sql = """
@@ -182,7 +186,7 @@ def user_info_get():
     return jsonify({'msg': 'GET 연결 완료!', 'user_info': users_result})
 
 
-@app.route('/user_info/edit', methods=['PUT'])
+@app.route('/users/info/edit', methods=['PUT'])
 def edit_done():
     token_receive = request.cookies.get('mytoken')
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -204,7 +208,8 @@ def edit_done():
     file.save(f'static/images/{save_to}')
     print(save_to)
 
-    db = pymysql.connect(host='localhost', user='root', db='test', password='emznp2xk!', charset='utf8')
+    db = pymysql.connect(host='localhost', user='root',
+                         db='test', password='0000', charset='utf8')
     curs = db.cursor()
 
     sql = """
@@ -219,7 +224,8 @@ def edit_done():
                 user_id = %s;
 		"""
 
-    curs.execute(sql, (email_receive, password_receive, name_receive, save_to, target_id))
+    curs.execute(sql, (email_receive, password_receive,
+                 name_receive, save_to, target_id))
 
     users_result = curs.fetchall()
     # print(users_result[0][1] != password_receive)
@@ -239,17 +245,17 @@ def user_only():
         jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         return jsonify({'result': 'success'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return jsonify({'result': 'fail', 'msg': '로그인을 먼저 진행해주세요!!'})
+        return jsonify({'result': 'fail', 'msg': '권한이 없습니다'})
 
 
 # ! 게시글 수정 페이지
 
-@app.route('/write_page')
+@app.route('/posts')
 def write_page():
     return render_template('write_page.html')
 
 
-@app.route('/write_page_update/<id>')
+@app.route('/posts/update/<id>')
 def write_page_update(id):
     print(id)
     return render_template('write_page_update.html', id=id)
@@ -259,12 +265,12 @@ def write_page_update(id):
 
 @app.route('/posts/list', methods=["GET"])
 def get_post():
-    db = pymysql.connect(host='localhost', user='root', db='test', password='emznp2xk!', charset='utf8')
+    db = pymysql.connect(host='localhost', user='root',
+                         db='test', password='0000', charset='utf8')
     curs = db.cursor()
 
     sql = """
-		SELECT title,content,topic,filename,post_id
-		FROM post p
+		SELECT title,content,topic,p.filename,post_id,name,reg_date FROM post p LEFT JOIN USER u ON u.user_id = p.user_id;
 		"""
 
     curs.execute(sql)
@@ -289,8 +295,6 @@ def save_post():
     topic = request.form['topic']
     content = request.form['content']
     file = request.files['file']
-
-    print(request.form)
     extension = file.filename.split('.')[-1]
     today = datetime.now()
     mytime = today.strftime("%Y-%m-%d-%H-%M-%S")
@@ -298,9 +302,8 @@ def save_post():
     save_to = f'{filename}.{extension}'
     file.save(f'static/images/{save_to}')
 
-
-
-    db = pymysql.connect(host='localhost', user='root', db='test', password='emznp2xk!', charset='utf8')
+    db = pymysql.connect(host='localhost', user='root',
+                         db='test', password='0000', charset='utf8')
 
     curs = db.cursor()
 
@@ -318,7 +321,7 @@ def save_post():
 
 # ! 게시글 업데이트
 
-@app.route('/updatepost', methods=["PUT"])
+@app.route('/posts/update', methods=["PUT"])
 def update_post():
     token_receive = request.cookies.get('mytoken')
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -328,15 +331,24 @@ def update_post():
     topic_receive = request.form['topic_give']
     content_receive = request.form['content_give']
     post_id_receive = request.form['post_id_give']
+    file = request.files['file_give']
+    extension = file.filename.split('.')[-1]
+    today = datetime.now()
+    mytime = today.strftime("%Y-%m-%d-%H-%M-%S")
+    filename = f'file-{mytime}'
+    save_to = f'{filename}.{extension}'
+    file.save(f'static/images/{save_to}')
 
-    db = pymysql.connect(host='localhost', user='root', db='test', password='emznp2xk!', charset='utf8')
+    db = pymysql.connect(host='localhost', user='root',
+                         db='test', password='0000', charset='utf8')
     curs = db.cursor()
 
     sql = """
-		UPDATE post SET title = %s, topic = %s, content = %s WHERE post_id = %s 
+		UPDATE post SET title = %s, topic = %s, content = %s, filename = %s WHERE post_id = %s AND user_id = %s
 		"""
 
-    curs.execute(sql, (title_receive, topic_receive, content_receive, post_id_receive))
+    curs.execute(sql, (title_receive, topic_receive,
+                 content_receive, save_to, post_id_receive, target_id))
 
     db.commit()
     db.close()
@@ -346,7 +358,7 @@ def update_post():
 
 # 삭제 기능--------------------------------------------------
 
-@app.route('/deletepost', methods=["DELETE"])
+@app.route('/posts/delete', methods=["DELETE"])
 def delete():
     token_receive = request.cookies.get('mytoken')
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -355,7 +367,7 @@ def delete():
     post_id = request.form['post_id']
     print(request.form['post_id'])
     db = pymysql.connect(host='localhost', user='root',
-                         db='test', password='emznp2xk!', charset='utf8')
+                         db='test', password='0000', charset='utf8')
     curs = db.cursor()
 
     sql = """
@@ -367,7 +379,7 @@ def delete():
     db.commit()
     db.close()
 
-    return jsonify({"result": "success", 'msg': '게시글 삭제 완료!'})
+    return jsonify({'msg': '게시글 삭제 완료!'})
 
 
 if __name__ == '__main__':

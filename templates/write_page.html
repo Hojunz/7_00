@@ -114,7 +114,7 @@
           contentType: false,
           processData: false,
           success: function (response) {
-            alert("작성완료!");
+            // alert("작성완료!");
             window.location.href = "/";
           },
         });
@@ -179,11 +179,7 @@
           ></textarea>
         </div>
         <div>
-          <button
-            type="button"
-            class="btn btn-primary"
-            onclick="user_only(); save_post()"
-          >
+          <button type="button" class="btn btn-primary" onclick="save_post()">
             게시글 작성
           </button>
           <button type="button" class="btn btn-secondary" onclick="cancel()">
