@@ -195,7 +195,7 @@ def edit_done():
     file.save(f'static/images/{save_to}')
     print(save_to)
 
-    db = pymysql.connect(host='localhost', user='root', db='flask_test', password='12345678', charset='utf8')
+    db = pymysql.connect(host='localhost', user='root', db='test', password='!', charset='utf8')
     curs = db.cursor()
 
     sql = """
@@ -272,6 +272,10 @@ def get_post():
 
 @app.route("/posts/save", methods=["POST"])
 def save_post():
+    token_receive = request.cookies.get('mytoken')
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    target_id = payload['id']
+
     title = request.form['title']
     topic = request.form['topic']
     content = request.form['content']
@@ -291,10 +295,10 @@ def save_post():
     curs = db.cursor()
 
     sql = """
-		INSERT INTO post (title,topic,content, filename) VALUES (%s,%s,%s,%s)
+		INSERT INTO post (title,topic,content, filename, user_id) VALUES (%s,%s,%s,%s,%s)
 		"""
 
-    curs.execute(sql, (title, topic, content, save_to))
+    curs.execute(sql, (title, topic, content, save_to, target_id))
 
     db.commit()
     db.close()
@@ -305,26 +309,29 @@ def save_post():
 # ! 게시글 업데이트
 
 @app.route('/updatepost', methods=["PUT"])
-def update():
-    post_id = request.form['post_id']
-    title = request.form['title']
-    topic = request.form['topic']
-    content = request.form['content']
+def update_post():
+    token_receive = request.cookies.get('mytoken')
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    target_id = payload['id']
+
+    title_receive = request.form['title_give']
+    topic_receive = request.form['topic_give']
+    content_receive = request.form['content_give']
 
     db = pymysql.connect(host='localhost', user='root',
                          db='test', password='!', charset='utf8')
     curs = db.cursor()
 
     sql = """
-		UPDATE post SET title = %s, topic = %s, content = %s WHERE post_id = %s
+		UPDATE post SET title = %s, topic = %s, content = %s WHERE post_id = %s 
 		"""
 
-    curs.execute(sql, (title, topic, content, post_id))
+    curs.execute(sql, (title_receive, topic_receive, content_receive, target_id))
 
     db.commit()
     db.close()
 
-    return jsonify({'msg': '게시글 수정 완료'})
+    return jsonify({"result": "success", 'msg': '게시글 수정 완료!'})
 
 
 if __name__ == '__main__':
