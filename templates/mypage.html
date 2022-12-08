@@ -102,7 +102,7 @@
                                         <td><input id="edit-pw" type="text" value="${password}"></td>
                                         <td><input id="edit-name" type="text" value="${name}"></td>
                                         <td>
-                                            <form id="ocr_form" action="#" method="" enctype="multipart/form-data">
+                                            <form id="ocr_form" action="http://localhost:5000/user_info/edit" method="PUT" enctype="multipart/form-data">
                                                 <input type="file" id="file" name="file">
                                             </form>
                                         </td>
@@ -116,19 +116,34 @@
         }
 
         function edit_done() {
-            console.log($('#edit-email').val())
+            // console.log($('#edit-email').val())
+            // console.log($('#edit-pw').val())
+            // console.log($('#edit-name').val())
 
             let edit_email = $('#edit-email').val()
+            let edit_pw = $('#edit-pw').val()
+            let edit_name = $('#edit-name').val()
+            let file = $("#file")[0].files[0];
+            console.log(file)
+
+            let form_data = new FormData();
+
+            form_data.append("file_edit_give", file);
+            form_data.append("email_edit_give", edit_email);
+            form_data.append("password_edit_give", edit_pw);
+            // form_data.append("password2_give", password2);
+            form_data.append("name_edit_give", edit_name);
 
             $.ajax({
                 type: "PUT",
-                url: '/',
-                data: "",
+                url: '/user_info/edit',
+                data: form_data,
                 cache: false,
                 contentType: false,
                 processData: false,
                 success: function (response) {
-
+                    alert(response["msg"])
+                    window.location.reload();
                 }
             });
         }
