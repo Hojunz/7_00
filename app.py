@@ -64,7 +64,7 @@ def log_in():
     # print(email_receive)
     # print(password_receive)
 
-    db = pymysql.connect(host='localhost', user='root', db='test', password='emznp2xk!', charset='utf8')
+    db = pymysql.connect(host='localhost', user='root', db='test', password='!', charset='utf8')
     # curs = db.cursor()
     curs = db.cursor(pymysql.cursors.DictCursor)
 
@@ -121,7 +121,7 @@ def save_users_info():
     file.save(f'static/images/{save_to}')
     print(save_to)
 
-    db = pymysql.connect(host='localhost', user='root', db='test', password='emznp2xk!', charset='utf8')
+    db = pymysql.connect(host='localhost', user='root', db='test', password='!', charset='utf8')
     curs = db.cursor()
 
     sql = """
@@ -152,7 +152,7 @@ def user_info_get():
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
     target_id = payload['id']
 
-    db = pymysql.connect(host='localhost', user='root', db='test', password='emznp2xk!', charset='utf8')
+    db = pymysql.connect(host='localhost', user='root', db='test', password='!', charset='utf8')
     curs = db.cursor(pymysql.cursors.DictCursor)
 
     sql = """
@@ -201,7 +201,7 @@ def write_page_update():
 @app.route('/posts/list', methods=["GET"])
 def get_post():
     db = pymysql.connect(host='localhost', user='root',
-                         db='test', password='emznp2xk!', charset='utf8')
+                         db='test', password='!', charset='utf8')
     curs = db.cursor()
 
     sql = """
@@ -237,7 +237,7 @@ def save_post():
     file.save(f'static/images/{save_to}')
 
     db = pymysql.connect(host='localhost', user='root',
-                         db='test', password='emznp2xk!', charset='utf8')
+                         db='test', password='!', charset='utf8')
     curs = db.cursor()
 
     sql = """
@@ -262,7 +262,7 @@ def update():
     content = request.form['content']
 
     db = pymysql.connect(host='localhost', user='root',
-                         db='test', password='emznp2xk!', charset='utf8')
+                         db='test', password='!', charset='utf8')
     curs = db.cursor()
 
     sql = """
