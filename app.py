@@ -17,30 +17,11 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 SECRET_KEY = 'Zoo'
 
 
-# 특정데이터 테스트
-# db = pymysql.connect(host='localhost', user='root', db='flask_test', password='12345678', charset='utf8')
-# curs = db.cursor()
-#
-# email_receive = 'aaaa'
-#
-# sql = """
-# 	SELECT *
-# 		FROM users u
-# 		WHERE u.email = %s
-# 	"""
-#
-# curs.execute(sql, email_receive)
-#
-# users_result = curs.fetchall()
-# print(users_result[0])
-#
-# json_str = json.dumps(users_result, indent=4, sort_keys=True, default=str)
-# db.commit()
-# db.close()
-
 @app.route('/')
 def home():
     return render_template('index.html')
+
+# 마이페이지 갈 때 유효성 검사
 
 
 @app.route('/', methods=['POST'])
@@ -58,18 +39,18 @@ def move_to_mypage():
 def login():
     return render_template('login.html')
 
+# 로그인
+
 
 @app.route('/login', methods=['POST'])
 def log_in():
     email_receive = request.form["email_give"]
     password_receive = request.form["password_give"]
     pw_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
-    # print(email_receive)
     print(pw_hash)
 
     db = pymysql.connect(host='localhost', user='root',
                          db='test', password='0000', charset='utf8')
-    # curs = db.cursor()
     curs = db.cursor(pymysql.cursors.DictCursor)
 
     sql = """
@@ -84,7 +65,6 @@ def log_in():
     print(users_result['user_id'])
 
     json_str = json.dumps(users_result, indent=4, sort_keys=True, default=str)
-    # 딕션너리 형태로 바꿔주기. spartagram 코드 app.py 4번째 줄 쯤..
     db.commit()
     db.close()
 
@@ -99,7 +79,6 @@ def log_in():
             'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
-        # print(token)
         return jsonify({'result': 'success', 'token': token})
 
 
@@ -107,19 +86,18 @@ def log_in():
 def signup():
     return render_template('signup.html')
 
+# 회원가입
+
 
 @app.route('/users/sign_up', methods=['POST'])
 def save_users_info():
     email_receive = request.form['email2_give']
     password_receive = request.form['password_give']
-    # password2_receive = request.form['password2_give']
     password_hash = hashlib.sha256(
         password_receive.encode('utf-8')).hexdigest()
-    # print(password_hash)
     name_receive = request.form['name_give']
 
     file = request.files["file_give"]
-    # print(file)
     extension = file.filename.split('.')[-1]
     today = datetime.now()
     mytime = today.strftime("%Y-%m-%d-%H-%M-%S")
@@ -127,13 +105,10 @@ def save_users_info():
     save_to = f'{filename}.{extension}'
     file.save(f'static/images/{save_to}')
 
-    # print(save_to)
-
     db = pymysql.connect(host='localhost', user='root',
                          db='test', password='0000', charset='utf8')
 
     curs = db.cursor()
-    # curs = db.cursor(pymysql.cursors.DictCursor)
 
     sql = """
 		insert into user (email, password, name, regdate, filename)
@@ -144,7 +119,6 @@ def save_users_info():
                  name_receive, mytime, save_to))
 
     users_result = curs.fetchall()
-    # print(users_result[0][1] != password_receive)
 
     json_str = json.dumps(users_result, indent=4, sort_keys=True, default=str)
     db.commit()
@@ -158,6 +132,7 @@ def mypage():
     return render_template('mypage.html')
 
 
+# 마이페이지
 @app.route("/users/info", methods=["GET"])
 def user_info_get():
     token_receive = request.cookies.get('mytoken')
@@ -185,28 +160,26 @@ def user_info_get():
 
     return jsonify({'msg': 'GET 연결 완료!', 'user_info': users_result})
 
+# 마이페이지 수정
+
 
 @app.route('/users/info/edit', methods=['PUT'])
 def edit_done():
     token_receive = request.cookies.get('mytoken')
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
     target_id = payload['id']
-    print(target_id)
 
     email_receive = request.form['email_edit_give']
     password_receive = request.form['password_edit_give']
-    # password2_receive = request.form['password2_give']
     name_receive = request.form['name_edit_give']
 
     file = request.files["file_edit_give"]
-    print(file)
     extension = file.filename.split('.')[-1]
     today = datetime.now()
     mytime = today.strftime("%Y-%m-%d-%H-%M-%S")
     filename = f'file-{mytime}'
     save_to = f'{filename}.{extension}'
     file.save(f'static/images/{save_to}')
-    print(save_to)
 
     db = pymysql.connect(host='localhost', user='root',
                          db='test', password='0000', charset='utf8')
@@ -228,13 +201,13 @@ def edit_done():
                  name_receive, save_to, target_id))
 
     users_result = curs.fetchall()
-    # print(users_result[0][1] != password_receive)
 
-    json_str = json.dumps(users_result, indent=4, sort_keys=True, default=str)
     db.commit()
     db.close()
 
     return jsonify({"result": "success", 'msg': '마이페이지 정보 수정 완료!'})
+
+# 유효성 검사
 
 
 @app.route('/user_only', methods=['POST'])
@@ -248,7 +221,7 @@ def user_only():
         return jsonify({'result': 'fail', 'msg': '권한이 없습니다'})
 
 
-# ! 게시글 수정 페이지
+# 게시글 수정 페이지
 
 @app.route('/posts')
 def write_page():
@@ -261,7 +234,7 @@ def write_page_update(id):
     return render_template('write_page_update.html', id=id)
 
 
-# ! 게시글 불러오기
+# 게시글 불러오기
 
 @app.route('/posts/list', methods=["GET"])
 def get_post():
@@ -284,7 +257,7 @@ def get_post():
     return jsonify({'post_list': post_list})
 
 
-# ! 게시글 작성
+# 게시글 작성
 
 @app.route("/posts/save", methods=["POST"])
 def save_post():
@@ -320,7 +293,7 @@ def save_post():
     return jsonify({'msg': '게시글 작성 완료!'})
 
 
-# ! 게시글 업데이트
+# 게시글 업데이트
 
 @app.route('/posts/update', methods=["PUT"])
 def update_post():
@@ -357,7 +330,7 @@ def update_post():
     return jsonify({"result": "success", 'msg': '게시글 수정 완료!'})
 
 
-# 삭제 기능--------------------------------------------------
+# 게시글 삭제
 
 @app.route('/posts/delete', methods=["DELETE"])
 def delete():
