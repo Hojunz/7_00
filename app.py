@@ -270,7 +270,8 @@ def get_post():
     curs = db.cursor()
 
     sql = """
-		SELECT title,content,topic,p.filename,post_id,name,reg_date FROM post p LEFT JOIN USER u ON u.user_id = p.user_id;
+		SELECT title,content,topic,p.filename,post_id,name,reg_date FROM post p 
+        LEFT JOIN USER u ON u.user_id = p.user_id;
 		"""
 
     curs.execute(sql)

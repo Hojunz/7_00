@@ -14,6 +14,20 @@
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
+    <style>
+      /* header {
+        background-image: url("https://image.shutterstock.com/image-photo/composite-large-group-wildlife-zoo-260nw-2120325011.jpg");
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        background-position: center;
+      } */
+      body {
+        background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCBVzjJFlLmgnXXc2V3sdKKsNYxX5WeQnsMA&usqp=CAU");
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        background-position: center;
+      }
+    </style>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
@@ -130,7 +144,7 @@
         <div class="inner">
           <!-- Header -->
           <header id="header">
-            <a href="/" class="logo"
+            <a href="/" class="logo" style="text-decoration: none"
               ><strong>7_OO 에 오신걸 환영합니다!</strong></a
             >
             <ul class="icons">
@@ -148,16 +162,14 @@
 
           <!-- Section -->
           <section>
-            <header class="major">
-              <li>
-                <button
-                  onclick="move_to_write_page()"
-                  class="btn-hover color-6"
-                >
-                  게시글 작성
-                </button>
-              </li>
-            </header>
+            <button
+              style="margin: auto; display: block"
+              onclick="move_to_write_page()"
+              class="btn-hover color-6"
+            >
+              게시글 작성
+            </button>
+
             <div class="mycards">
               <div
                 class="row row-cols-1 row-cols-md-4 g-4"
